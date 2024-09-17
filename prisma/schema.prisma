@@ -1,0 +1,40 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  comments  Comment[]
+  createdAt DateTime @default(now())
+}
+
+model Place {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  category    String
+  image       String
+  description String  @db.VarChar(1000)
+  address    String  
+  opentime    String  
+  googleMaps  String  @db.VarChar(1000)
+  comments    Comment[]
+}
+
+model Comment {
+  id        Int     @id @default(autoincrement())
+  text      String
+  rating    Int     
+  userId    Int
+  placeId   Int
+  user      User    @relation(fields: [userId], references: [id])
+  place     Place   @relation(fields: [placeId], references: [id])
+  createdAt DateTime @default(now())
+}
